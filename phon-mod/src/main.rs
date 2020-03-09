@@ -1,6 +1,17 @@
+use std::io;
+
 fn main()
 {
     welcome();
+    println!("{}", MENU);
+    print_prompt();
+
+    let mut selection = String::new();
+
+    io::stdin().read_line(&mut selection)
+        .expect("Failed to read user input.");
+    
+    println!("The user selected: {}\n", selection);
 }
 
 static MENU: &str = "What do you want to accomplish?
@@ -16,8 +27,6 @@ static PROMPT: &str = "(PROMPT:) ";
 fn welcome()
 {
     println!("Please read README.md file for instructions on how to use.");
-    println!("{}", MENU);
-    print_prompt();
 }
 
 fn print_prompt()
