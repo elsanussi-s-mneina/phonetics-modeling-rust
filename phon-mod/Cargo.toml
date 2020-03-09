@@ -1,0 +1,9 @@
+[package]
+name = "phon-mod"
+version = "0.1.0"
+authors = ["elsanussi-s-mneina <52800671+elsanussi-s-mneina@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
