@@ -26,7 +26,7 @@ fn main()
     }
     else if selection == "3"
     {
-        prompt_for_phoneme_to_unvoice()
+        prompt_for_phoneme_to_devoice()
     }
     else
     {
@@ -43,12 +43,33 @@ fn view_english_phoneme_inventory()
 
 fn prompt_for_phoneme_to_voice()
 {
-    println!("Prompt for phoneme to voice not implemented!");
+    println!("Enter the phoneme you would like to voice:");
+    print_prompt();
+    
+    let mut phoneme = String::new();
+
+    io::stdin().read_line(&mut phoneme)
+        .expect("Failed to read user input.");
+    
+    phoneme = phoneme.trim().to_string();
+    
+
+    println!("phoneme {} to voice not implemented!", phoneme);
 }
 
-fn prompt_for_phoneme_to_unvoice()
+fn prompt_for_phoneme_to_devoice()
 {
-    println!("Prompt for phoneme to unvoice not implemented!");
+    println!("Enter the phoneme you would like to devoice:");
+    print_prompt();
+    let mut phoneme = String::new();
+
+    io::stdin().read_line(&mut phoneme)
+        .expect("Failed to read user input.");
+    
+    phoneme = phoneme.trim().to_string();
+    
+
+    println!("phoneme {} to devoice not implemented!", phoneme);
 }
 
 static MENU: &str = "What do you want to accomplish?
