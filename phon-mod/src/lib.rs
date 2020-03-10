@@ -1,6 +1,6 @@
 mod lib
 {
-
+    use Phonet::*;
     use VocalFolds::*;
     use Place::*;
     use Manner::*;
@@ -139,5 +139,20 @@ mod lib
     static VOCAL_FOLD_STATES: [VocalFolds; 2] = 
       [Voiceless, Voiced];
 
+
+
+    fn voiced_phonet(phonete: Phonet) -> Phonet
+    {
+        // A function that given an IPA symbol will convert it to the voiced equivalent.
+        match phonete
+        {
+            Consonant{vocal_folds: VoicelessAspirated, place: x, manner: y, airstream: z} => Consonant{vocal_folds: VoicedAspirated, place: x, manner: y, airstream: z},
+            Consonant{vocal_folds: Voiceless, place: x, manner: y, airstream: z} => Consonant{vocal_folds: Voiced, place: x, manner: y, airstream: z},
+            Consonant{vocal_folds: Voiced, place: x, manner: y, airstream: z} => Consonant{vocal_folds: Voiced, place: x, manner: y, airstream: z},
+            Consonant{vocal_folds: VoicedAspirated, place: x, manner: y, airstream: z} => Consonant {vocal_folds: VoicedAspirated, place: x, manner: y, airstream: z},
+            Consonant{vocal_folds: UnmarkedVocalFolds, place: x, manner: y, airstream: z} => Consonant {vocal_folds: UnmarkedVocalFolds, place: x, manner: y, airstream: z},
+            Vowel{height: x, backness: y, rounding: z, vocal_folds: _} => Vowel{height: x, backness: y, rounding: z,    vocal_folds: Voiced},
+        }
+    }
 
 }
