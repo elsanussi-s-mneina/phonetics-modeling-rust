@@ -9,7 +9,6 @@ mod lib
     use Backness::*;
     use Rounding::*;
     use VocalFolds::*;
-    use TenseLax::*;
 
     enum Phonet
     {
@@ -48,13 +47,6 @@ mod lib
 
     static HEIGHT_STATES: [Height; 7] = 
       [Close, NearClose, CloseMid, Mid, OpenMid, NearOpen, Open];
-
-    enum TenseLax
-    { 
-        Tense , Lax , UnmarkedTenseness
-    }
-
-    static TENSE_STATES: [TenseLax; 2] = [Tense, Lax];
 
     enum Rounding 
     {
