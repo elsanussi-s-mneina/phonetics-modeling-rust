@@ -32,6 +32,8 @@ fn main()
     {
        println!("User selection not handled");
     }
+    
+    println!("\nProgram terminated normally.\n\n");
 }
 
 fn view_english_phoneme_inventory()
