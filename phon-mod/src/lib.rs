@@ -141,11 +141,12 @@ mod lib
     #[derive(Eq, PartialEq, Debug)]
     enum VocalFolds
     {
-        Voiced , Voiceless , VoicedAspirated , VoicelessAspirated , UnmarkedVocalFolds
+        Voiced , Voiceless , VoicedAspirated , VoicelessAspirated , CreakyVoiced, UnmarkedVocalFolds
     }
 
-    static VOCAL_FOLD_STATES: [VocalFolds; 2] = 
-      [Voiceless, Voiced];
+    static VOCAL_FOLD_STATES: [VocalFolds; 5] =
+      [Voiceless, Voiced, VoicedAspirated, VoicelessAspirated, CreakyVoiced];
+
 
     struct PhonetInventory([Phonet]);
 
@@ -158,7 +159,8 @@ mod lib
             Consonant{vocal_folds: Voiceless, place: x, manner: y, airstream: z} => Consonant{vocal_folds: Voiced, place: x, manner: y, airstream: z},
             Consonant{vocal_folds: Voiced, place: x, manner: y, airstream: z} => Consonant{vocal_folds: Voiced, place: x, manner: y, airstream: z},
             Consonant{vocal_folds: VoicedAspirated, place: x, manner: y, airstream: z} => Consonant {vocal_folds: VoicedAspirated, place: x, manner: y, airstream: z},
-            Consonant{vocal_folds: UnmarkedVocalFolds, place: x, manner: y, airstream: z} => Consonant {vocal_folds: UnmarkedVocalFolds, place: x, manner: y, airstream: z},
+            Consonant{vocal_folds: _, place: x, manner: y, airstream: z} => Consonant {vocal_folds: Voiced, place: x, manner: y, airstream: z},
+
             Vowel{height: x, backness: y, rounding: z, vocal_folds: _} => Vowel{height: x, backness: y, rounding: z,    vocal_folds: Voiced},
         }
     }
