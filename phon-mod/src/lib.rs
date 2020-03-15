@@ -304,7 +304,7 @@ pub mod lib
                 else
                 {
                     airstream2 = Vec::new();
-                    airstream2.push(airstream1  );
+                    airstream2.push(airstream1);
                 }
 
                 
@@ -405,7 +405,7 @@ pub mod lib
                         {
                             for v in voice2.iter()
                             {
-                                possibilities.push(Vowel{height: *h, backness: (*b).clone(), rounding: (*r).clone(), vocal_folds: (*v).clone()});
+                                possibilities.push(Vowel{height: *h, backness: *b, rounding: *r, vocal_folds: *v});
                             }
                         }
                     }
