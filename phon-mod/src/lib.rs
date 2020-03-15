@@ -189,5 +189,40 @@ mod lib
         }
     }
 
-
+    fn unmark_differences(phonet1: Phonet, phonet2: Phonet) -> Phonet
+    {
+        match (phonet1, phonet2)
+        {
+            (Consonant{vocal_folds: voice1, place: place1, manner: manner1, airstream: airstream1}, 
+             Consonant{vocal_folds: voice2, place: place2, manner: manner2, airstream: airstream2}) 
+            =>
+            {
+                let voice3     = if voice1     == voice2     { voice1   } else { UnmarkedVocalFolds } ;
+                let place3     = if place1     == place2     { place1   } else { UnmarkedPlace      };
+                let manner3    = if manner1    == manner2    {manner1   } else { UnmarkedManner     };
+                let airstream3 = if airstream1 == airstream2 {airstream1} else { UnmarkedAirstream  };
+                Consonant{vocal_folds:voice3, place: place3, manner: manner3, airstream: airstream3}
+            },
+            (Vowel{height: height1, backness: backness1, rounding: rounding1, vocal_folds: voice1}, 
+             Vowel{height: height2, backness: backness2, rounding: rounding2, vocal_folds: voice2})
+            =>
+            {
+                let voice3    = if voice1    == voice2    { voice1    } else { UnmarkedVocalFolds };
+                let height3   = if height1   == height2   { height1   } else { UnmarkedHeight     };
+                let backness3 = if backness1 == backness2 { backness1 } else { UnmarkedBackness   };
+                let rounding3 = if rounding1 == rounding2 { rounding1 } else { UnmarkedRounding   };
+                Vowel{height: height3, backness: backness3, rounding: rounding3, vocal_folds: voice3}
+            }
+            (Vowel{height: height1, backness: backness1, rounding: rounding1, vocal_folds: voice1},
+             Consonant{vocal_folds: voice2, place: place2, manner: manner2, airstream: airstream2}) 
+            =>
+            {
+                let voice3 = if voice1 == voice2 { voice1 } else { UnmarkedVocalFolds };
+                Vowel{height: UnmarkedHeight, backness: UnmarkedBackness, rounding: UnmarkedRounding, vocal_folds: voice3}
+            },
+            (c @ Consonant{vocal_folds: _, place: _, manner: _, airstream: _},
+             v @ Vowel{height: _, backness: _, rounding: _, vocal_folds: _}) 
+            => unmark_differences(v, c) // Change the order of arguments
+        }
+    }
 }
