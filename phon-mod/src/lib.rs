@@ -10,7 +10,6 @@ mod lib
     use Height::*;
     use Backness::*;
     use Rounding::*;
-    use VocalFolds::*;
 
     #[derive(Eq, PartialEq, Debug)]
     enum Phonet
