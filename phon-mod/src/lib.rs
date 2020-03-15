@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 pub mod lib
 {
     use Phonet::*;
@@ -84,7 +82,7 @@ pub mod lib
                   , PalatoAlveolar
                   ];
     
-    fn retracted_place(place: Place) -> Place
+    pub fn retracted_place(place: Place) -> Place
     {
         match place
         {
@@ -149,7 +147,7 @@ pub mod lib
       [Voiceless, Voiced, VoicedAspirated, VoicelessAspirated, CreakyVoiced];
 
 
-    struct PhonetInventory([Phonet]);
+    pub struct PhonetInventory([Phonet]);
 
     // A function that given an IPA symbol will convert it to the voiced equivalent.
     pub fn voiced_phonet(phonete: Phonet) -> Phonet
@@ -168,7 +166,7 @@ pub mod lib
 
 
     // A function that given an IPA symbol will convert it to the voiceless equivalent.
-    fn devoiced_phonet(phonet: Phonet) -> Phonet
+    pub fn devoiced_phonet(phonet: Phonet) -> Phonet
     {
         match phonet
         {
@@ -182,7 +180,7 @@ pub mod lib
     }
 
 
-    fn spirantized_phonet(phonet: Phonet) -> Phonet
+    pub fn spirantized_phonet(phonet: Phonet) -> Phonet
     {
         match phonet
         {
@@ -192,7 +190,7 @@ pub mod lib
         }
     }
 
-    fn unmark_differences(phonet1: Phonet, phonet2: Phonet) -> Phonet
+    pub fn unmark_differences(phonet1: Phonet, phonet2: Phonet) -> Phonet
     {
         match (phonet1, phonet2)
         {
@@ -233,7 +231,7 @@ pub mod lib
         
 
 
-    fn generate_from_unmarked(phonet: Phonet) -> Vec<Phonet>
+    pub fn generate_from_unmarked(phonet: Phonet) -> Vec<Phonet>
     {
         match phonet
         {
