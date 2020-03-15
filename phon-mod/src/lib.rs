@@ -171,6 +171,15 @@ mod lib
     }
 
 
+    fn spirantizedPhonet(phonet: Phonet) -> Phonet
+    {
+        match phonet
+        {
+            Consonant {vocal_folds: x, place: Alveolar, manner: Plosive, airstream: z} => Consonant {vocal_folds: x, place: Dental, manner: Fricative, airstream: z},
+            Consonant {vocal_folds: x, place: a_place   , manner: Plosive, airstream: z} => Consonant {vocal_folds: x, place: a_place , manner: Fricative, airstream: z},
+            other => other
+        }
+    }
 
 
 }
