@@ -10,6 +10,7 @@ mod lib
     use Rounding::*;
     use VocalFolds::*;
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Phonet
     {
         Consonant
@@ -31,6 +32,7 @@ mod lib
 
 
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Backness
     {
          Front , Central , Back , UnmarkedBackness
@@ -39,6 +41,7 @@ mod lib
 
     static BACKNESS_STATES: [Backness; 3] = [Front, Central, Back];
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Height
     { 
       Close , NearClose , CloseMid ,
@@ -48,6 +51,7 @@ mod lib
     static HEIGHT_STATES: [Height; 7] = 
       [Close, NearClose, CloseMid, Mid, OpenMid, NearOpen, Open];
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Rounding 
     {
         Rounded , Unrounded , UnmarkedRounding
@@ -56,6 +60,7 @@ mod lib
     static ROUNDING_STATES: [Rounding; 2] = [Rounded, Unrounded];
 
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Place
     {
         Bilabial, LabioDental, Dental, Alveolar, PostAlveolar,
@@ -96,6 +101,7 @@ mod lib
         }
     }
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Manner
     { Plosive , Nasal , Trill , TapOrFlap , Approximant , Fricative
                   , Affricate 
@@ -120,6 +126,7 @@ mod lib
         , Lateral
         ];
 
+    #[derive(Eq, PartialEq, Debug)]
     enum Airstream
     {
         PulmonicEgressive , Click , Implosive , UnmarkedAirstream
@@ -131,6 +138,7 @@ mod lib
           Implosive
          ];
 
+    #[derive(Eq, PartialEq, Debug)]
     enum VocalFolds
     {
         Voiced , Voiceless , VoicedAspirated , VoicelessAspirated , UnmarkedVocalFolds
