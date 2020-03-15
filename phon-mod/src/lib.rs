@@ -171,7 +171,7 @@ mod lib
     }
 
 
-    fn spirantizedPhonet(phonet: Phonet) -> Phonet
+    fn spirantized_phonet(phonet: Phonet) -> Phonet
     {
         match phonet
         {
