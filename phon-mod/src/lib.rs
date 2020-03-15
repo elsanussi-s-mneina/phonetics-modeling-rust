@@ -32,7 +32,7 @@ mod lib
 
 
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum Backness
     {
          Front , Central , Back , UnmarkedBackness
@@ -41,7 +41,7 @@ mod lib
 
     static BACKNESS_STATES: [Backness; 3] = [Front, Central, Back];
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum Height
     { 
       Close , NearClose , CloseMid ,
@@ -51,7 +51,7 @@ mod lib
     static HEIGHT_STATES: [Height; 7] = 
       [Close, NearClose, CloseMid, Mid, OpenMid, NearOpen, Open];
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum Rounding 
     {
         Rounded , Unrounded , UnmarkedRounding
@@ -60,7 +60,7 @@ mod lib
     static ROUNDING_STATES: [Rounding; 2] = [Rounded, Unrounded];
 
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum Place
     {
         Bilabial, LabioDental, Dental, Alveolar, PostAlveolar,
@@ -101,7 +101,7 @@ mod lib
         }
     }
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum Manner
     { Plosive , Nasal , Trill , TapOrFlap , Approximant , Fricative
                   , Affricate 
@@ -126,7 +126,7 @@ mod lib
         , Lateral
         ];
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum Airstream
     {
         PulmonicEgressive , Click , Implosive , UnmarkedAirstream
@@ -138,7 +138,7 @@ mod lib
           Implosive
          ];
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     enum VocalFolds
     {
         Voiced , Voiceless , VoicedAspirated , VoicelessAspirated , CreakyVoiced, UnmarkedVocalFolds
@@ -215,8 +215,8 @@ mod lib
                 let rounding3 = if rounding1 == rounding2 { rounding1 } else { UnmarkedRounding   };
                 Vowel{height: height3, backness: backness3, rounding: rounding3, vocal_folds: voice3}
             }
-            (Vowel{height: height1, backness: backness1, rounding: rounding1, vocal_folds: voice1},
-             Consonant{vocal_folds: voice2, place: place2, manner: manner2, airstream: airstream2}) 
+            (Vowel{height: _, backness: _, rounding: _, vocal_folds: voice1},
+             Consonant{vocal_folds: voice2, place: _, manner: _, airstream: _})
             =>
             {
                 let voice3 = if voice1 == voice2 { voice1 } else { UnmarkedVocalFolds };
@@ -227,4 +227,194 @@ mod lib
             => unmark_differences(v, c) // Change the order of arguments
         }
     }
+    
+
+        
+
+
+    fn generate_from_unmarked(phonet: Phonet) -> Vec<Phonet>
+    {
+        match phonet
+        {
+            Consonant{vocal_folds: voice1, place: place1, manner: manner1, airstream: airstream1}
+            =>
+            {
+                let mut voice2: Vec<VocalFolds>;
+                if voice1  == UnmarkedVocalFolds
+                {
+                    voice2 = Vec::new();
+                    
+                    for v in VOCAL_FOLD_STATES.iter()
+                    {
+                        voice2.push(*v);
+                    }
+                }
+                else
+                {
+                    voice2 = Vec::new();
+                    voice2.push(voice1);
+                }
+                
+                let mut place2: Vec<Place>;
+                if place1  == UnmarkedPlace
+                {
+                    place2 = Vec::new();
+                    
+                    for p in PLACE_STATES.iter()
+                    {
+                        place2.push(*p);
+                    }
+                }
+                else
+                {
+                    place2 = Vec::new();
+                    place2.push(place1);
+                }
+                
+
+
+                let mut manner2: Vec<Manner>;
+                if manner1  == UnmarkedManner
+                {
+                    manner2 = Vec::new();
+                    
+                    for m in MANNER_STATES.iter()
+                    {
+                        manner2.push(*m);
+                    }
+                }
+                else
+                {
+                    manner2 = Vec::new();
+                    manner2.push(manner1);
+                }
+
+
+
+
+                let mut airstream2: Vec<Airstream>;
+                if airstream1  == UnmarkedAirstream
+                {
+                    airstream2 = Vec::new();
+                    
+                    for a in AIRSTREAM_STATES.iter()
+                    {
+                        airstream2.push(*a);
+                    }
+                }
+                else
+                {
+                    airstream2 = Vec::new();
+                    airstream2.push(airstream1  );
+                }
+
+                
+                let mut possibilities: Vec<Phonet> = Vec::new();
+
+                for p in place2.iter()
+                {
+                    for v in voice2.iter()
+                    {
+                        for m in manner2.iter()
+                        {
+                            for a in airstream2.iter()
+                            {
+                                possibilities.push(Consonant{vocal_folds: *v, place: *p, manner: *m, airstream: *a});
+                            }
+                        }
+                    }
+                }
+                possibilities
+            },
+           Vowel{height: height1, backness: backness1, rounding: rounding1, vocal_folds: voice1}
+            =>
+            {
+                let mut voice2: Vec<VocalFolds>;
+                if voice1  == UnmarkedVocalFolds
+                {
+                    voice2 = Vec::new();
+                    
+                    for v in VOCAL_FOLD_STATES.iter()
+                    {
+                        voice2.push(*v);
+                    }
+                }
+                else
+                {
+                    voice2 = Vec::new();
+                    voice2.push(voice1);
+                }
+                
+                let mut height2: Vec<Height>;
+                if height1   == UnmarkedHeight
+                {
+                    height2 = Vec::new();
+                    
+                    for h in HEIGHT_STATES.iter()
+                    {
+                        height2.push(*h);
+                    }
+                }
+                else
+                {
+                    height2 = Vec::new();
+                    height2.push(height1);
+                }
+
+                let mut backness2: Vec<Backness>;
+                if backness1 == UnmarkedBackness
+                {
+                    backness2 = Vec::new();
+                    
+                    for b in BACKNESS_STATES.iter()
+                    {
+                        backness2.push(*b);
+                    }
+                }
+                else
+                {
+                    backness2 = Vec::new();
+                    backness2.push(backness1);
+                }
+
+
+
+                let mut rounding2: Vec<Rounding>;
+                if rounding1 == UnmarkedRounding
+                {
+                    rounding2 = Vec::new();
+                    
+                    for r in ROUNDING_STATES.iter()
+                    {
+                        rounding2.push(*r);
+                    }
+                }
+                else
+                {
+                    rounding2 = Vec::new();
+                    rounding2.push(rounding1);
+                }
+
+                
+                let mut possibilities: Vec<Phonet> = Vec::new();
+                
+                for h in height2.iter()
+                {
+                    for b in backness2.iter()
+                    {
+                        for r in rounding2.iter()
+                        {
+                            for v in voice2.iter()
+                            {
+                                possibilities.push(Vowel{height: *h, backness: (*b).clone(), rounding: (*r).clone(), vocal_folds: (*v).clone()});
+                            }
+                        }
+                    }
+                }
+                possibilities
+            },
+        }
+    }
+    
+    
 }
