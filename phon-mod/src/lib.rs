@@ -415,5 +415,42 @@ pub mod lib
         }
     }
     
+
+    // The following function returns whether an articulation is
+    // considered impossible according to the IPA (pulmonic) consonants chart.
+    // Does not work for other values.
+    pub fn impossible(phonet: Phonet) -> bool
+    {
+        match phonet
+        {
+            Consonant{vocal_folds: Voiced         , place: Pharyngeal , manner: Plosive           , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: VoicedAspirated, place: Pharyngeal , manner: Plosive           , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: Voiceless      , place: Glottal    , manner: Plosive           , airstream: PulmonicEgressive} => false,  // [ʔ] is not impossible.
+            Consonant{vocal_folds: _              , place: Glottal    , manner: Fricative         , airstream: PulmonicEgressive} => false,  // [h] and [ɦ] are not impossible.
+            Consonant{vocal_folds: _              , place: Glottal    , manner: _                 , airstream: PulmonicEgressive} => true,   // all other pulmonary egressive glottal consonants are impossible..
+            Consonant{vocal_folds: _              , place: Pharyngeal , manner: Nasal             , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: Pharyngeal , manner: LateralFricative  , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: Pharyngeal , manner: LateralApproximant, airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: Velar      , manner: Trill             , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: Velar      , manner: TapOrFlap         , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: Bilabial   , manner: LateralFricative  , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: Bilabial   , manner: LateralApproximant, airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: LabioDental, manner: LateralFricative  , airstream: PulmonicEgressive} => true,
+            Consonant{vocal_folds: _              , place: LabioDental, manner: LateralApproximant, airstream: PulmonicEgressive} => true,
+            _ => false, // Everything else is assumed to be possible.
+        }
+    }
+
+    // Whether a phonet is in an intervocalic environment.
+    // This means that there is a vowel directly before it,
+    // and one after it.
+    pub fn intervocalic(before: Phonet, after: Phonet) -> bool
+    {
+        match (before, after)
+        {
+            (Vowel {height: _, backness: _, rounding: _, vocal_folds: _}, Vowel {height: _, backness: _, rounding: _, vocal_folds: _}) => true,
+            (_       , _       ) => false,
+        }
+    }
     
 }
