@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-mod lib
+pub mod lib
 {
     use Phonet::*;
     use VocalFolds::*;
@@ -12,7 +12,7 @@ mod lib
     use Rounding::*;
 
     #[derive(Eq, PartialEq, Debug)]
-    enum Phonet
+    pub enum Phonet
     {
         Consonant
         {
@@ -34,7 +34,7 @@ mod lib
 
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum Backness
+    pub enum Backness
     {
          Front , Central , Back , UnmarkedBackness
     }
@@ -43,7 +43,7 @@ mod lib
     static BACKNESS_STATES: [Backness; 3] = [Front, Central, Back];
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum Height
+    pub enum Height
     { 
       Close , NearClose , CloseMid ,
       Mid , OpenMid , NearOpen , Open , UnmarkedHeight
@@ -53,7 +53,7 @@ mod lib
       [Close, NearClose, CloseMid, Mid, OpenMid, NearOpen, Open];
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum Rounding 
+    pub enum Rounding
     {
         Rounded , Unrounded , UnmarkedRounding
     }
@@ -62,7 +62,7 @@ mod lib
 
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum Place
+    pub enum Place
     {
         Bilabial, LabioDental, Dental, Alveolar, PostAlveolar,
         Retroflex, Palatal, Velar, Uvular, Pharyngeal, Glottal, Epiglottal,
@@ -103,7 +103,7 @@ mod lib
     }
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum Manner
+    pub enum Manner
     { Plosive , Nasal , Trill , TapOrFlap , Approximant , Fricative
                   , Affricate 
                   , LateralFricative
@@ -128,7 +128,7 @@ mod lib
         ];
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum Airstream
+    pub enum Airstream
     {
         PulmonicEgressive , Click , Implosive , UnmarkedAirstream
     }
@@ -140,7 +140,7 @@ mod lib
          ];
 
     #[derive(Eq, PartialEq, Debug, Clone, Copy)]
-    enum VocalFolds
+    pub enum VocalFolds
     {
         Voiced , Voiceless , VoicedAspirated , VoicelessAspirated , CreakyVoiced, UnmarkedVocalFolds
     }
@@ -152,7 +152,7 @@ mod lib
     struct PhonetInventory([Phonet]);
 
     // A function that given an IPA symbol will convert it to the voiced equivalent.
-    fn voiced_phonet(phonete: Phonet) -> Phonet
+    pub fn voiced_phonet(phonete: Phonet) -> Phonet
     {
         match phonete
         {

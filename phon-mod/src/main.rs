@@ -1,5 +1,12 @@
 use std::io;
 
+use phon_mod::lib::Phonet::*;
+use phon_mod::lib::VocalFolds::*;
+use phon_mod::lib::Place::*;
+use phon_mod::lib::Manner::*;
+use phon_mod::lib::Airstream::*;
+use phon_mod::lib::voiced_phonet;
+
 fn main()
 {
     welcome();
@@ -55,6 +62,9 @@ fn prompt_for_phoneme_to_voice()
     
 
     println!("phoneme {} to voice not implemented!", phoneme);
+
+    let b_phoneme = Consonant {vocal_folds: Voiced, place: Bilabial, manner: Plosive, airstream: PulmonicEgressive}; 
+    println!("Here is a demo: [b] devoiced is {:?}", voiced_phonet(b_phoneme));
 }
 
 fn prompt_for_phoneme_to_devoice()
