@@ -220,6 +220,46 @@ pub mod international_phonetic_alphabet
       ];
 
 
+    fn analyze_manner_IPA(x: char) -> (Manner, usize)
+    {
+        if CONSONANTS_PULMONIC_TABLE[0].iter().any(|&elem| elem == x) == true
+        {
+            return (Plosive, 0);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[1].iter().any(|&elem| elem == x) == true
+        {
+            return (Nasal, 1);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[2].iter().any(|&elem| elem == x) == true
+        {
+            return (Trill, 2);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[3].iter().any(|&elem| elem == x) == true
+        {
+            return (TapOrFlap, 3);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[4].iter().any(|&elem| elem == x) == true
+        {
+            return (Fricative, 4);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[5].iter().any(|&elem| elem == x) == true
+        {
+            return (LateralFricative, 5);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[6].iter().any(|&elem| elem == x) == true
+        {
+            return (Approximant, 6);
+        }
+        else if CONSONANTS_PULMONIC_TABLE[7].iter().any(|&elem| elem == x) == true
+        {
+            return (LateralApproximant, 7);
+        }
+        else
+        {
+            return (LateralApproximant, 7); // Not right, but will have to work for now. // TODO: Fix this.
+        }
+    }
+
 
     fn col_index_to_voicing(col_index: usize) -> VocalFolds
     {
