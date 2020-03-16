@@ -1,3 +1,6 @@
+mod grapheme;
+
+
 use std::io;
 
 use phon_mod::lib::Phonet::*;

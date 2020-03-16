@@ -9,7 +9,7 @@ pub mod lib
     use Backness::*;
     use Rounding::*;
 
-    #[derive(Eq, PartialEq, Debug)]
+    #[derive(Eq, PartialEq, Debug, Clone, Copy)]
     pub enum Phonet
     {
         Consonant

@@ -1,6 +1,24 @@
 pub mod international_phonetic_alphabet
 {
+    use phon_mod::lib::Phonet;
+    use phon_mod::lib::Phonet::*;
+    use phon_mod::lib::VocalFolds;
+    use phon_mod::lib::VocalFolds::*;
+    use phon_mod::lib::Place;
+    use phon_mod::lib::Place::*;
+    use phon_mod::lib::Manner;
+    use phon_mod::lib::Manner::*;
+    use phon_mod::lib::Airstream;
+    use phon_mod::lib::Airstream::*;
+    use phon_mod::lib::Height;
+    use phon_mod::lib::Height::*;
+    use phon_mod::lib::Backness;
+    use phon_mod::lib::Backness::*;
+    use phon_mod::lib::Rounding;
+    use phon_mod::lib::Rounding::*;
 
+
+    
     pub struct IPAText(String);
       // For storing text meant to be interpreted as International phonetic alphabet
 
@@ -58,7 +76,7 @@ pub mod international_phonetic_alphabet
 
     fn is_ascender(character: char) -> bool
     {
-        ASCENDERS.into_iter().any(|&curr| curr == character)
+        ASCENDERS.iter().any(|&curr| curr == character)
     }
     
     static DESCENDERS: [char; 28] =
@@ -76,7 +94,7 @@ pub mod international_phonetic_alphabet
     /// they are readable.
     fn is_descender(character: char) -> bool
     {
-        DESCENDERS.into_iter().any(|&curr| curr == character)
+        DESCENDERS.iter().any(|&curr| curr == character)
     }
 
     // See: https://www.internationalphoneticassociation.org/sites/default/files/IPA_Kiel_2015.pdf
@@ -168,7 +186,7 @@ pub mod international_phonetic_alphabet
       , '↘' // Global fall
       ];
 
-    static DIACRITICS_AND_SUPERSEGMENTALS: [char; 28] =
+    static DIACRITICS_AND_SUPRASEGMENTALS: [char; 28] =
       [ 'ʰ'  // Aspirated
       , 'ʷ'  // Labialised
       , 'ʲ'  // Palatalised
@@ -200,4 +218,243 @@ pub mod international_phonetic_alphabet
       , '̆'   // Extra short
       , '̇'    // Palatalization/Centralization
       ];
+
+
+
+    fn col_index_to_voicing(col_index: usize) -> VocalFolds
+    {
+        if col_index % 2 == 0
+        {
+            Voiceless
+        }
+        else
+        {
+            Voiced
+        }
+    }
+    
+    fn voicing_to_col_index_offset(vocal_folds: VocalFolds) -> usize
+    {
+        match vocal_folds
+        {
+            Voiceless => 0,
+            Voiced    => 1,
+            VoicelessAspirated => 0,
+            VoicedAspirated => 1,
+            CreakyVoiced => 1,
+            UnmarkedVocalFolds => 0,
+        }
+    }
+    
+    fn manner_to_row_index(manner: Manner) -> usize
+    {
+        let row_names: [Manner; 8] = [Plosive, Nasal, Trill, TapOrFlap, Fricative, LateralFricative, Approximant, LateralApproximant];
+        row_names.iter().position(|&elem| elem == manner).unwrap()
+    }
+    
+
+    fn place_to_half_col_index(place: Place) -> usize
+    {
+      let col_names: [Place; 11] = [Bilabial, LabioDental, Dental, Alveolar, PostAlveolar, Retroflex, Palatal, Velar, Uvular, Pharyngeal, Glottal];
+      col_names.iter().position(|&elem| elem == place).unwrap()
+    }
+    
+    fn voicing_and_place_to_col_index(voicing: VocalFolds, place: Place) -> usize
+    {
+      (2 * place_to_half_col_index(place)) + voicing_to_col_index_offset(voicing)
+    }
+
+    fn construct_unaspirated_pulmonic_egressive(phone_description: Phonet) -> String
+    {
+        match phone_description
+        {
+            Consonant{vocal_folds: voicing1, place: place1, manner: manner1, airstream: _} =>
+            {
+                let row_index = manner_to_row_index(manner1);
+                let col_index = voicing_and_place_to_col_index(voicing1, place1);
+                (CONSONANTS_PULMONIC_TABLE[row_index][col_index]).to_string()
+            },
+            _ => String::from(""),
+        }
+    }
+
+
+    fn deaspirate(phone_description: Phonet) -> Phonet
+    {
+        match phone_description
+        {
+            Consonant {vocal_folds: VoicedAspirated   , place: place1, manner: manner1, airstream: airstream1} => Consonant {vocal_folds: Voiced   , place: place1, manner: manner1, airstream: airstream1},
+            Consonant {vocal_folds: VoicelessAspirated, place: place1, manner: manner1, airstream: airstream1} => Consonant {vocal_folds: Voiceless, place: place1, manner: manner1, airstream: airstream1},
+            x => x,
+        }
+    }
+
+
+
+    pub fn construct_IPA(phone_description: Phonet) -> String
+    {
+        match phone_description
+        {
+            // Affricates
+            Consonant { vocal_folds: Voiceless, place: PostAlveolar,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("t͡ʃ"),
+            Consonant { vocal_folds: Voiced   , place: PostAlveolar,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("d͡ʒ"),
+            Consonant { vocal_folds: Voiceless, place: Bilabial    ,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("p͡ɸ"),
+            Consonant { vocal_folds: Voiceless, place: Alveolar    ,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("t͜s"),
+            Consonant { vocal_folds: Voiced   , place: Alveolar    ,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("d͡z"),
+            Consonant { vocal_folds: Voiceless, place: Velar       ,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("k͡x"),
+            Consonant { vocal_folds: Voiceless, place: Uvular      ,  manner: Affricate,  airstream: PulmonicEgressive} => String::from("q͡χ"),
+            // The following two lines are commented out, because I am unsure about their place of articulation:
+            // Consonant { vocal_folds: Voiceless, place: LabialVelar?                , manner: Affricate, airstream: PulmonicEgressive} => String::from("k͡p"),
+            // Consonant { vocal_folds: Voiceless, place: Palatal (or AlveolaPalatal?), manner: Affricate, airstream: PulmonicEgressive} => String::from("c͡ɕ"),
+            _ =>
+            {
+                // If it can represent it as a single character it will
+                // return the single character result (i.e. without diacritics),
+                // otherwise
+                // it will try to represent it in IPA with more than
+                // one character
+                let simple_result = construct_IPA1(phone_description);
+                if simple_result == " "
+                {
+                    construct_IPA2(phone_description)
+                }
+                else
+                {
+                    simple_result
+                }
+            },
+        }
+    }
+
+
+    // Note to Software Developer: the reason there are three
+    // functions for constructing the IPA is to prevent
+    // infinite recursion. The reason is that
+    // if we only had one function, it would // for some
+    // cases never halt if it could not find a character
+    // to place a diacritic on.
+
+    // | Given an analysis construct an IPA symbol
+    // | This function will allow us to convert an analyzed form
+    // | to its IPA symbol.
+    // | Note this only returns one character without diacritics.
+    fn construct_IPA1(phone_description: Phonet) -> String
+    {
+
+    // Under the Other Symbols part of the IPA chart:
+        match phone_description
+        {
+            Consonant {vocal_folds: Voiced   , place: LabialVelar  , manner: Approximant, airstream: PulmonicEgressive}              => String::from("w"),
+            Consonant {vocal_folds: Voiceless, place: LabialVelar  , manner: Fricative  , airstream: PulmonicEgressive}              => String::from("ʍ"),
+            Consonant {vocal_folds: Voiced   , place: LabialPalatal, manner: Approximant, airstream: PulmonicEgressive}              => String::from("ɥ"),
+            Consonant {vocal_folds: Voiceless, place: Epiglottal   , manner: Fricative  , airstream: PulmonicEgressive}              => String::from("ʜ"),
+            Consonant {vocal_folds: Voiced   , place: Epiglottal   , manner: Fricative  , airstream: PulmonicEgressive}              => String::from("ʢ"),
+            Consonant {vocal_folds: Voiceless, place: Epiglottal   , manner: Plosive    , airstream: PulmonicEgressive}              => String::from("ʡ"),
+            // Is the epiglottal plosive voiceless? The IPA chart does not specify.
+
+            Consonant {vocal_folds: Voiceless         , place: AlveoloPalatal, manner: Fricative     , airstream: PulmonicEgressive} => String::from("ɕ"),
+            Consonant {vocal_folds: Voiced            , place: AlveoloPalatal, manner: Fricative     , airstream: PulmonicEgressive} => String::from("ʑ"),
+            Consonant {vocal_folds: Voiced            , place: Alveolar      , manner: LateralFlap   , airstream: PulmonicEgressive} => String::from("ɺ"),
+
+            // We cannot handle the ɧ (simultaneous ʃ and x) because
+            // we did not define our data types to handle it yet.
+            // constructIPA (simultaneous (analyzeIPA "ʃ") (analyzeIPA "x")) = "ɧ"
+
+            // Other Consonants:
+            Consonant {vocal_folds: UnmarkedVocalFolds, place: Bilabial      , manner: UnmarkedManner, airstream: Click            }  => String::from("ʘ"),
+            Consonant {vocal_folds: UnmarkedVocalFolds, place: Dental        , manner: UnmarkedManner, airstream: Click            }  => String::from("ǀ"),
+            Consonant {vocal_folds: UnmarkedVocalFolds, place: Alveolar      , manner: UnmarkedManner, airstream: Click            }  => String::from("ǃ"), // Or it could be PostAlveolar
+            Consonant {vocal_folds: UnmarkedVocalFolds, place: PalatoAlveolar, manner: UnmarkedManner, airstream: Click            }  => String::from("ǂ"),
+            Consonant {vocal_folds: UnmarkedVocalFolds, place: Alveolar      , manner: Lateral       , airstream: Click            }  => String::from("ǁ"),
+            Consonant {vocal_folds: Voiced            , place: Bilabial      , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ɓ"),
+            Consonant {vocal_folds: Voiced            , place: Dental        , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ɗ"),  // Or Alveolar
+            Consonant {vocal_folds: Voiced            , place: Palatal       , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ʄ"),
+            Consonant {vocal_folds: Voiced            , place: Velar         , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ɠ"),
+            Consonant {vocal_folds: Voiced            , place: Uvular        , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ʛ"),
+
+           c @ Consonant {vocal_folds: Voiced, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(c),
+
+           c @ Consonant {vocal_folds: VoicedAspirated,  place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(deaspirate(c)) + "ʰ",
+
+           c @ Consonant {vocal_folds: Voiceless, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(c),
+
+           c @ Consonant {vocal_folds: VoicelessAspirated, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(deaspirate(c)) + "ʰ",
+
+           // Close Vowels:
+           Vowel { height: Close    , backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("i"),
+           Vowel { height: Close    , backness: Front  , rounding: Rounded         , vocal_folds: Voiced} => String::from("y"),
+           Vowel { height: Close    , backness: Central, rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɨ"),
+           Vowel { height: Close    , backness: Central, rounding: Rounded         , vocal_folds: Voiced} => String::from("ʉ"),
+           Vowel { height: Close    , backness: Back   , rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɯ"),
+           Vowel { height: Close    , backness: Back   , rounding: Rounded         , vocal_folds: Voiced} => String::from("u"),
+
+           // Near-close Vowels:
+           Vowel { height: NearClose, backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɪ"),
+           Vowel { height: NearClose, backness: Front  , rounding: Rounded         , vocal_folds: Voiced} => String::from("ʏ"),
+           Vowel { height: NearClose, backness: Back   , rounding: Rounded         , vocal_folds: Voiced} => String::from("ʊ"), // Close-mid Vowels:
+           Vowel { height: CloseMid , backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("e"),
+           Vowel { height: CloseMid , backness: Front  , rounding: Rounded         , vocal_folds: Voiced} => String::from("ø"),
+           Vowel { height: CloseMid , backness: Central, rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɘ"),
+           Vowel { height: CloseMid , backness: Central, rounding: Rounded         , vocal_folds: Voiced} => String::from("ɵ"),
+           Vowel { height: CloseMid , backness: Back   , rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɤ"),
+           Vowel { height: CloseMid , backness: Back   , rounding: Rounded         , vocal_folds: Voiced} => String::from("o"), // Mid Vowels:
+           Vowel { height: Mid      , backness: Central, rounding: UnmarkedRounding, vocal_folds: Voiced} => String::from("ə"), // Open-mid Vowels:
+           Vowel { height: OpenMid  , backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɛ"),
+           Vowel { height: OpenMid  , backness: Front  , rounding: Rounded         , vocal_folds: Voiced} => String::from("œ"),
+           Vowel { height: OpenMid  , backness: Central, rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɜ"),
+           Vowel { height: OpenMid  , backness: Central, rounding: Rounded         , vocal_folds: Voiced} => String::from("ɞ"),
+           Vowel { height: OpenMid  , backness: Back   , rounding: Unrounded       , vocal_folds: Voiced} => String::from("ʌ"),
+           Vowel { height: OpenMid  , backness: Back   , rounding: Rounded         , vocal_folds: Voiced} => String::from("ɔ"), // Near-open
+           Vowel { height: NearOpen , backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("æ"),
+           Vowel { height: NearOpen , backness: Central, rounding: UnmarkedRounding, vocal_folds: Voiced} => String::from("ɐ"), // Open Vowels:
+           Vowel { height: Open     , backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("a"),
+           Vowel { height: Open     , backness: Front  , rounding: Rounded         , vocal_folds: Voiced} => String::from("ɶ"),
+           Vowel { height: Open     , backness: Back   , rounding: Unrounded       , vocal_folds: Voiced} => String::from("ɑ"),
+           Vowel { height: Open     , backness: Back   , rounding: Rounded         , vocal_folds: Voiced} => String::from("ɒ"),
+
+           _                                                                                              => String::from(" "),
+        }
+
+    }
+
+    
+    fn construct_IPA2(phonet: Phonet) -> String
+    {
+        match phonet
+        {
+
+            Consonant {vocal_folds: x, place: PostAlveolar, manner: y, airstream: z} =>
+              construct_IPA1(Consonant {vocal_folds: x, place: Alveolar, manner: y, airstream: z}) + "̠",  // Add the diacritic for "retracted"
+
+
+            // If there isn't a symbol, and the consonant we want is voiceless,
+            // Just take the symbol for a voiced consonant,
+            // and then put that diacritic that means voiceless after.
+            // (The following two definitions are intended to implement that)
+            // Add the small circle diacritic to consonants to make them voiceless.
+            Consonant {vocal_folds: Voiceless, place: x, manner: y, airstream: z} =>
+              construct_IPA1(Consonant {vocal_folds: Voiced, place: x, manner: y, airstream: z}) + "̥", // add diacritic for voiceless
+
+            // Add the small circle diacritic to vowels to make them voiceless.
+            Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiceless} =>
+              construct_IPA1(Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiced}) + "̥",
+
+            // If there is no way to express a voiced consonant in a single
+            // grapheme add a diacritic to the grapheme that represents
+            // the voiceless counterpart.
+            Consonant {vocal_folds: Voiced, place: x, manner: y, airstream: z} =>
+              construct_IPA1(Consonant {vocal_folds: Voiceless, place: x, manner: y, airstream: z}) + "̬",
+
+            Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiced} =>
+              construct_IPA1(Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiceless}) + "̬",
+
+            _                                                                => String::from("∅"), // This return value ( a symbol representing the empty set)
+            // is not a full answer. It really means we don't have an answer.
+            // We are only using it here so that we can ignore values we have not programmed
+            // yet. We just want it to show that we do not have it.
+        }
+    }
+
+
+
 }
