@@ -259,6 +259,29 @@ pub mod international_phonetic_alphabet
             return (LateralApproximant, 7); // Not right, but will have to work for now. // TODO: Fix this.
         }
     }
+    
+    fn analyze_place_IPA(col_index: usize) -> Place
+    {
+        let col_names = [Bilabial, LabioDental, Dental, Alveolar, PostAlveolar, Retroflex, Palatal, Velar, Uvular, Pharyngeal, Glottal];
+        col_names[col_index / 2]
+    }
+
+
+    fn placeToHalfColIndex(place: Place) -> usize
+    {
+        let col_names = [Bilabial, LabioDental, Dental, Alveolar, PostAlveolar, Retroflex, Palatal, Velar, Uvular, Pharyngeal, Glottal];
+        col_names.iter().position(|&elem| elem == place).unwrap()
+    }
+    
+    
+    fn analyzeIPAv2(x: char) -> Phonet
+    {
+        let (manner1, row_index) = analyze_manner_IPA(x);
+        let col_index = CONSONANTS_PULMONIC_TABLE[row_index].iter().position(|&elem| elem == x).unwrap();
+        let voicing   = col_index_to_voicing(col_index);
+        let place1    = analyze_place_IPA(col_index);
+        Consonant {vocal_folds: voicing, place: place1, manner: manner1, airstream: PulmonicEgressive}
+    }
 
 
     fn col_index_to_voicing(col_index: usize) -> VocalFolds
