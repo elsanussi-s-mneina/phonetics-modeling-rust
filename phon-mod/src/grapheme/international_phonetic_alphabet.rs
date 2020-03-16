@@ -274,7 +274,7 @@ pub mod international_phonetic_alphabet
     }
     
     
-    fn analyzeIPAv2(x: char) -> Phonet
+    fn analyze_IPAv2(x: char) -> Phonet
     {
         let (manner1, row_index) = analyze_manner_IPA(x);
         let col_index = CONSONANTS_PULMONIC_TABLE[row_index].iter().position(|&elem| elem == x).unwrap();
@@ -326,6 +326,143 @@ pub mod international_phonetic_alphabet
     {
       (2 * place_to_half_col_index(place)) + voicing_to_col_index_offset(voicing)
     }
+
+
+    // | This function will allow us to convert an IPA symbol
+    // | to its analyzed form (its phonetic features)
+    // Currently, only the consonants (pulmonic) in the 2005 IPA chart are included.
+    pub fn analyze_IPA(text: String) -> Phonet
+    {
+        match text.as_str()
+        {
+            // Affricates
+            "t͡ʃ" => Consonant {vocal_folds: Voiceless, place: PostAlveolar, manner: Affricate, airstream: PulmonicEgressive},
+            "d͡ʒ" => Consonant {vocal_folds: Voiced   , place: PostAlveolar, manner: Affricate, airstream: PulmonicEgressive},
+            // We should probably enforce use of the tie-bar underneath, otherwise
+            // it would not be deterministic to determine whether two graphemes here
+            // represent affricates or a plosive followed by a fricative.
+
+
+            // Other Consonants:
+            
+            "w" => Consonant{vocal_folds: Voiced            , place: LabialVelar   , manner: Approximant   , airstream: PulmonicEgressive},
+            "ʍ" => Consonant{vocal_folds: Voiceless         , place: LabialVelar   , manner: Fricative     , airstream: PulmonicEgressive},
+            "ɥ" => Consonant{vocal_folds: Voiced            , place: LabialPalatal , manner: Approximant   , airstream: PulmonicEgressive},
+            "ʜ" => Consonant{vocal_folds: Voiceless         , place: Epiglottal    , manner: Fricative     , airstream: PulmonicEgressive},
+            "ʢ" => Consonant{vocal_folds: Voiced            , place: Epiglottal    , manner: Fricative     , airstream: PulmonicEgressive},
+            
+            // Under the Other Symbols part of the IPA chart:
+            // Is the epiglottal plosive voiceless? The IPA chart does not specify.
+
+            "ʡ" => Consonant{vocal_folds: Voiceless         , place: Epiglottal    , manner: Plosive       , airstream: PulmonicEgressive},
+            "ɕ" => Consonant{vocal_folds: Voiceless         , place: AlveoloPalatal, manner: Fricative     , airstream: PulmonicEgressive},
+            "ʑ" => Consonant{vocal_folds: Voiced            , place: AlveoloPalatal, manner: Fricative     , airstream: PulmonicEgressive},
+            "ɺ" => Consonant{vocal_folds: Voiced            , place: Alveolar      , manner: LateralFlap   , airstream: PulmonicEgressive},
+            
+            // We cannot handle the ɧ (simultaneous ʃ and x) because
+            // we did not define our data types to handle it yet.
+            // In any case, here is some pseudocode for it:
+            // analyzeIPA "ɧ" = simultaneous (analyzeIPA "ʃ") (analyzeIPA "x")
+
+            "ʘ" => Consonant{vocal_folds: UnmarkedVocalFolds, place: Bilabial      , manner: UnmarkedManner, airstream: Click            },
+            "ǀ" => Consonant{vocal_folds: UnmarkedVocalFolds, place: Dental        , manner: UnmarkedManner, airstream: Click            },
+            "ǃ" => Consonant{vocal_folds: UnmarkedVocalFolds, place: Alveolar      , manner: UnmarkedManner, airstream: Click            },   // Or it could be PostAlveolar.
+            "ǂ" => Consonant{vocal_folds: UnmarkedVocalFolds, place: PalatoAlveolar, manner: UnmarkedManner, airstream: Click            },
+            "ǁ" => Consonant{vocal_folds: UnmarkedVocalFolds, place: Alveolar      , manner: Lateral       , airstream: Click            },
+            "ɓ" => Consonant{vocal_folds: Voiced            , place: Bilabial      , manner: UnmarkedManner, airstream: Implosive        },
+            "ɗ" => Consonant{vocal_folds: Voiced            , place: Dental        , manner: UnmarkedManner, airstream: Implosive        },  // Or Alveolar
+            "ʄ" => Consonant{vocal_folds: Voiced            , place: Palatal       , manner: UnmarkedManner, airstream: Implosive        },
+            "ɠ" => Consonant{vocal_folds: Voiced            , place: Velar         , manner: UnmarkedManner, airstream: Implosive        },
+            "ʛ" => Consonant{vocal_folds: Voiced            , place: Uvular        , manner: UnmarkedManner, airstream: Implosive        },
+
+            // Close Vowels:
+            "i"  => Vowel {height: Close    , backness: Front  , rounding: Unrounded       , vocal_folds:  Voiced},
+            "y"  => Vowel {height: Close    , backness: Front  , rounding: Rounded         , vocal_folds:  Voiced},
+            "ɨ"  => Vowel {height: Close    , backness: Central, rounding: Unrounded       , vocal_folds:  Voiced},
+            "ʉ"  => Vowel {height: Close    , backness: Central, rounding: Rounded         , vocal_folds:  Voiced},
+            "ɯ"  => Vowel {height: Close    , backness: Back   , rounding: Unrounded       , vocal_folds:  Voiced},
+            "u"  => Vowel {height: Close    , backness: Back   , rounding: Rounded         , vocal_folds:  Voiced},
+            // Near-close Vowels:
+            "ɪ"  => Vowel {height: NearClose, backness: Front  , rounding: Unrounded       , vocal_folds:  Voiced},
+            "ʏ"  => Vowel {height: NearClose, backness: Front  , rounding: Rounded         , vocal_folds:  Voiced},
+            "ʊ"  => Vowel {height: NearClose, backness: Back   , rounding: Rounded         , vocal_folds:  Voiced},
+            // Close-mid Vowels:
+            "e"  => Vowel {height: CloseMid , backness: Front  , rounding: Unrounded       , vocal_folds:  Voiced},
+            "ø"  => Vowel {height: CloseMid , backness: Front  , rounding: Rounded         , vocal_folds:  Voiced},
+            "ɘ"  => Vowel {height: CloseMid , backness: Central, rounding: Unrounded       , vocal_folds:  Voiced},
+            "ɵ"  => Vowel {height: CloseMid , backness: Central, rounding: Rounded         , vocal_folds:  Voiced},
+            "ɤ"  => Vowel {height: CloseMid , backness: Back   , rounding: Unrounded       , vocal_folds:  Voiced},
+            "o"  => Vowel {height: CloseMid , backness: Back   , rounding: Rounded         , vocal_folds:  Voiced},
+            // Mid Vowels:
+            "ə"  => Vowel {height: Mid      , backness: Central, rounding: UnmarkedRounding, vocal_folds:  Voiced},
+            // Open-mid Vowels:
+            "ɛ"  => Vowel {height: OpenMid  , backness: Front  , rounding: Unrounded       , vocal_folds:  Voiced},
+            "œ"  => Vowel {height: OpenMid  , backness: Front  , rounding: Rounded         , vocal_folds:  Voiced},
+            "ɜ"  => Vowel {height: OpenMid  , backness: Central, rounding: Unrounded       , vocal_folds:  Voiced},
+            "ɞ"  => Vowel {height: OpenMid  , backness: Central, rounding: Rounded         , vocal_folds:  Voiced},
+            "ʌ"  => Vowel {height: OpenMid  , backness: Back   , rounding: Unrounded       , vocal_folds:  Voiced},
+            "ɔ"  => Vowel {height: OpenMid  , backness: Back   , rounding: Rounded         , vocal_folds:  Voiced},
+            // Near-open
+            "æ"  => Vowel {height: NearOpen , backness: Front  , rounding: Unrounded       , vocal_folds:  Voiced},
+            "ɐ"  => Vowel {height: NearOpen , backness: Central, rounding: UnmarkedRounding, vocal_folds:  Voiced},
+            // Open Vowels:
+            "a"  => Vowel {height: Open     , backness: Front  , rounding: Unrounded       , vocal_folds:  Voiced},
+            "ɶ"  => Vowel {height: Open     , backness: Front  , rounding: Rounded         , vocal_folds:  Voiced},
+            "ɑ"  => Vowel {height: Open     , backness: Back   , rounding: Unrounded       , vocal_folds:  Voiced},
+            "ɒ"  => Vowel {height: Open     , backness: Back   , rounding: Rounded         , vocal_folds:  Voiced},
+
+
+            x if x.len() == 1  => analyze_IPAv2(x[0..1].to_string().chars().next().unwrap()),
+            x =>
+            {
+                // Handle Diacritics:
+
+                if x[1..2] == "̥".to_string()
+                {
+                    let fullGrapheme = analyze_IPA(x[0..1].to_string());
+                    
+                    match fullGrapheme
+                    {
+                        Consonant {vocal_folds: _, place: place1, manner: manner1, airstream: airstream1}  => Consonant {vocal_folds: Voiceless, place: place1, manner: manner1, airstream: airstream1},
+                        Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: _}  => Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: Voiceless},
+                    }
+
+                }
+                else if x[1..2] == "̬".to_string()
+                {
+                    let fullGrapheme = analyze_IPA(x[0..1].to_string());
+                    
+                    match fullGrapheme
+                    {
+                            Consonant {vocal_folds: _, place: place1, manner: manner1, airstream: airstream1} => Consonant {vocal_folds: Voiced, place: place1, manner: manner1, airstream: airstream1 },
+                            Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: _}  => Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: Voiced },
+                    }
+
+                }
+                else if x[1..2] == "ʰ".to_string()
+                {
+                    let fullGrapheme = analyze_IPA(String::from(x[0..1].to_string()));
+                    match fullGrapheme
+                    {
+                            Consonant {vocal_folds: Voiced   , place: place1, manner: manner1, airstream: airstream1 } => Consonant {vocal_folds: VoicedAspirated   , place: place1, manner: manner1, airstream: airstream1 },
+                            Consonant {vocal_folds: Voiceless, place: place1, manner: manner1, airstream: airstream1 } => Consonant {vocal_folds: VoicelessAspirated, place: place1, manner: manner1, airstream: airstream1 },
+                            Vowel     {height: height1, backness: backness1, rounding: rounding1, vocal_folds: voice } => Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: voice },
+                            // (About the preceding line:) It is strange but we will just do nothing if they give us an aspirated vowel.
+                            // since we have no way to represent it in the type system. to do: determine
+                            // if the idea of an aspirated vowel makes sense
+                            _ => Consonant {vocal_folds: UnmarkedVocalFolds, place: UnmarkedPlace, manner: UnmarkedManner, airstream: UnmarkedAirstream}
+
+                    }
+                }
+                else
+                {
+                    Consonant {vocal_folds: UnmarkedVocalFolds, place: UnmarkedPlace, manner: UnmarkedManner, airstream: UnmarkedAirstream}
+                    // Not recognized.
+                }
+            },
+        }
+    }
+
 
     fn construct_unaspirated_pulmonic_egressive(phone_description: Phonet) -> String
     {
