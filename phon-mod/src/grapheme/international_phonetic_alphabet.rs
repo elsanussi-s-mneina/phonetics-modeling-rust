@@ -12,6 +12,8 @@ pub mod international_phonetic_alphabet
     use phon_mod::lib::Height::*;
     use phon_mod::lib::Backness::*;
     use phon_mod::lib::Rounding::*;
+    use phon_mod::lib::voiced_phonet;
+    use phon_mod::lib::devoiced_phonet;
 
 
     
@@ -639,6 +641,21 @@ pub mod international_phonetic_alphabet
         }
     }
 
+
+    pub fn voiced_IPA(x: String) -> String
+    {
+        construct_IPA(voiced_phonet(analyze_IPA(x)))
+    }
+
+    pub fn devoiced_IPA(x: String) -> String
+    {
+        construct_IPA(devoiced_phonet(analyzeIPA(x)))
+    }
+
+    pub fn spirantized_IPA(x: String) -> String
+    {
+        construct_IPA(spirantized_phonet(analyze_IPA(x)))
+    }
 
 
 }
