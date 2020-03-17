@@ -8,13 +8,9 @@ pub mod international_phonetic_alphabet
     use phon_mod::lib::Place::*;
     use phon_mod::lib::Manner;
     use phon_mod::lib::Manner::*;
-    use phon_mod::lib::Airstream;
     use phon_mod::lib::Airstream::*;
-    use phon_mod::lib::Height;
     use phon_mod::lib::Height::*;
-    use phon_mod::lib::Backness;
     use phon_mod::lib::Backness::*;
-    use phon_mod::lib::Rounding;
     use phon_mod::lib::Rounding::*;
 
 

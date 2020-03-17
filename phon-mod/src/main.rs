@@ -5,11 +5,6 @@ use crate::grapheme::international_phonetic_alphabet::international_phonetic_alp
 
 use std::io;
 
-use phon_mod::lib::Phonet::*;
-use phon_mod::lib::VocalFolds::*;
-use phon_mod::lib::Place::*;
-use phon_mod::lib::Manner::*;
-use phon_mod::lib::Airstream::*;
 use phon_mod::lib::voiced_phonet;
 use phon_mod::lib::devoiced_phonet;
 
