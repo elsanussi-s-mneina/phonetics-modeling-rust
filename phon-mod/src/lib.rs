@@ -440,17 +440,4 @@ pub mod lib
             _ => false, // Everything else is assumed to be possible.
         }
     }
-
-    // Whether a phonet is in an intervocalic environment.
-    // This means that there is a vowel directly before it,
-    // and one after it.
-    pub fn intervocalic(before: Phonet, after: Phonet) -> bool
-    {
-        match (before, after)
-        {
-            (Vowel {height: _, backness: _, rounding: _, vocal_folds: _}, Vowel {height: _, backness: _, rounding: _, vocal_folds: _}) => true,
-            (_       , _       ) => false,
-        }
-    }
-    
 }
