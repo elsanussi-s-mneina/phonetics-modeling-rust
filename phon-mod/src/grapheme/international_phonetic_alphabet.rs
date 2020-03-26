@@ -14,7 +14,7 @@ pub mod international_phonetic_alphabet
     use phon_mod::lib::Rounding::*;
     use phon_mod::lib::voiced_phonet;
     use phon_mod::lib::devoiced_phonet;
-
+    use phon_mod::lib::spirantized_phonet;
 
     
     pub struct IPAText(String);
@@ -649,7 +649,7 @@ pub mod international_phonetic_alphabet
 
     pub fn devoiced_IPA(x: String) -> String
     {
-        construct_IPA(devoiced_phonet(analyzeIPA(x)))
+        construct_IPA(devoiced_phonet(analyze_IPA(x)))
     }
 
     pub fn spirantized_IPA(x: String) -> String
