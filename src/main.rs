@@ -1,7 +1,7 @@
 mod grapheme;
 
-use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::voiced_IPA;
-use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::devoiced_IPA;
+use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::voiced_transcription;
+use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::devoiced_transcription;
 
 use std::io;
 
@@ -58,7 +58,7 @@ fn prompt_for_phoneme_to_voice()
         .expect("Failed to read user input.");
     
     phoneme = phoneme.trim().to_string();
-    println!("{}", voiced_IPA(phoneme));
+    println!("{}", voiced_transcription(phoneme));
 }
 
 fn prompt_for_phoneme_to_devoice()
@@ -71,7 +71,7 @@ fn prompt_for_phoneme_to_devoice()
         .expect("Failed to read user input.");
     
     phoneme = phoneme.trim().to_string();
-    println!("{}", devoiced_IPA(phoneme));
+    println!("{}", devoiced_transcription(phoneme));
 }
 
 static MENU: &str = "What do you want to accomplish?

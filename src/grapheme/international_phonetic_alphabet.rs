@@ -132,7 +132,7 @@ pub mod international_phonetic_alphabet
       ];
 
 
-    fn analyze_manner_IPA(x: char) -> (Manner, usize)
+    fn analyze_manner_transcription(x: char) -> (Manner, usize)
     {
         if CONSONANTS_PULMONIC_TABLE[0].iter().any(|&elem| elem == x) == true
         {
@@ -172,26 +172,19 @@ pub mod international_phonetic_alphabet
         }
     }
     
-    fn analyze_place_IPA(col_index: usize) -> Place
+    fn analyze_place_transcription(col_index: usize) -> Place
     {
         let col_names = [Bilabial, LabioDental, Dental, Alveolar, PostAlveolar, Retroflex, Palatal, Velar, Uvular, Pharyngeal, Glottal];
         col_names[col_index / 2]
     }
 
 
-    fn placeToHalfColIndex(place: Place) -> usize
+    fn analyze_transcriptionv2(x: char) -> Phonet
     {
-        let col_names = [Bilabial, LabioDental, Dental, Alveolar, PostAlveolar, Retroflex, Palatal, Velar, Uvular, Pharyngeal, Glottal];
-        col_names.iter().position(|&elem| elem == place).unwrap()
-    }
-    
-    
-    fn analyze_IPAv2(x: char) -> Phonet
-    {
-        let (manner1, row_index) = analyze_manner_IPA(x);
+        let (manner1, row_index) = analyze_manner_transcription(x);
         let col_index = CONSONANTS_PULMONIC_TABLE[row_index].iter().position(|&elem| elem == x).unwrap();
         let voicing   = col_index_to_voicing(col_index);
-        let place1    = analyze_place_IPA(col_index);
+        let place1    = analyze_place_transcription(col_index);
         Consonant {vocal_folds: voicing, place: place1, manner: manner1, airstream: PulmonicEgressive}
     }
 
@@ -243,7 +236,7 @@ pub mod international_phonetic_alphabet
     // | This function will allow us to convert an IPA symbol
     // | to its analyzed form (its phonetic features)
     // Currently, only the consonants (pulmonic) in the 2005 IPA chart are included.
-    pub fn analyze_IPA(text: String) -> Phonet
+    pub fn analyze_transcription(text: String) -> Phonet
     {
         match text.as_str()
         {
@@ -324,16 +317,16 @@ pub mod international_phonetic_alphabet
             "ɒ"  => Vowel {height: Open     , backness: Back   , rounding: Rounded         , vocal_folds:  Voiced},
 
 
-            x if x.len() == 1  => analyze_IPAv2(x[0..1].to_string().chars().next().unwrap()),
+            x if x.len() == 1  => analyze_transcriptionv2(x[0..1].to_string().chars().next().unwrap()),
             x =>
             {
                 // Handle Diacritics:
 
                 if x[1..2] == "̥".to_string()
                 {
-                    let fullGrapheme = analyze_IPA(x[0..1].to_string());
+                    let full_grapheme = analyze_transcription(x[0..1].to_string());
                     
-                    match fullGrapheme
+                    match full_grapheme
                     {
                         Consonant {vocal_folds: _, place: place1, manner: manner1, airstream: airstream1}  => Consonant {vocal_folds: Voiceless, place: place1, manner: manner1, airstream: airstream1},
                         Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: _}  => Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: Voiceless},
@@ -342,9 +335,9 @@ pub mod international_phonetic_alphabet
                 }
                 else if x[1..2] == "̬".to_string()
                 {
-                    let fullGrapheme = analyze_IPA(x[0..1].to_string());
+                    let full_grapheme = analyze_transcription(x[0..1].to_string());
                     
-                    match fullGrapheme
+                    match full_grapheme
                     {
                             Consonant {vocal_folds: _, place: place1, manner: manner1, airstream: airstream1} => Consonant {vocal_folds: Voiced, place: place1, manner: manner1, airstream: airstream1 },
                             Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: _}  => Vowel {height: height1, backness: backness1, rounding: rounding1, vocal_folds: Voiced },
@@ -353,8 +346,8 @@ pub mod international_phonetic_alphabet
                 }
                 else if x[1..2] == "ʰ".to_string()
                 {
-                    let fullGrapheme = analyze_IPA(String::from(x[0..1].to_string()));
-                    match fullGrapheme
+                    let full_grapheme = analyze_transcription(String::from(x[0..1].to_string()));
+                    match full_grapheme
                     {
                             Consonant {vocal_folds: Voiced   , place: place1, manner: manner1, airstream: airstream1 } => Consonant {vocal_folds: VoicedAspirated   , place: place1, manner: manner1, airstream: airstream1 },
                             Consonant {vocal_folds: Voiceless, place: place1, manner: manner1, airstream: airstream1 } => Consonant {vocal_folds: VoicelessAspirated, place: place1, manner: manner1, airstream: airstream1 },
@@ -403,7 +396,7 @@ pub mod international_phonetic_alphabet
 
 
 
-    pub fn construct_IPA(phone_description: Phonet) -> String
+    pub fn construct_transcription(phone_description: Phonet) -> String
     {
         match phone_description
         {
@@ -425,10 +418,10 @@ pub mod international_phonetic_alphabet
                 // otherwise
                 // it will try to represent it in IPA with more than
                 // one character
-                let simple_result = construct_IPA1(phone_description);
+                let simple_result = construct_transcription1(phone_description);
                 if simple_result == " "
                 {
-                    construct_IPA2(phone_description)
+                    construct_transcription2(phone_description)
                 }
                 else
                 {
@@ -450,7 +443,7 @@ pub mod international_phonetic_alphabet
     // | This function will allow us to convert an analyzed form
     // | to its IPA symbol.
     // | Note this only returns one character without diacritics.
-    fn construct_IPA1(phone_description: Phonet) -> String
+    fn construct_transcription1(phone_description: Phonet) -> String
     {
 
     // Under the Other Symbols part of the IPA chart:
@@ -530,13 +523,13 @@ pub mod international_phonetic_alphabet
     }
 
     
-    fn construct_IPA2(phonet: Phonet) -> String
+    fn construct_transcription2(phonet: Phonet) -> String
     {
         match phonet
         {
 
             Consonant {vocal_folds: x, place: PostAlveolar, manner: y, airstream: z} =>
-              construct_IPA1(Consonant {vocal_folds: x, place: Alveolar, manner: y, airstream: z}) + "̠",  // Add the diacritic for "retracted"
+              construct_transcription1(Consonant {vocal_folds: x, place: Alveolar, manner: y, airstream: z}) + "̠",  // Add the diacritic for "retracted"
 
 
             // If there isn't a symbol, and the consonant we want is voiceless,
@@ -545,20 +538,20 @@ pub mod international_phonetic_alphabet
             // (The following two definitions are intended to implement that)
             // Add the small circle diacritic to consonants to make them voiceless.
             Consonant {vocal_folds: Voiceless, place: x, manner: y, airstream: z} =>
-              construct_IPA1(Consonant {vocal_folds: Voiced, place: x, manner: y, airstream: z}) + "̥", // add diacritic for voiceless
+              construct_transcription1(Consonant {vocal_folds: Voiced, place: x, manner: y, airstream: z}) + "̥", // add diacritic for voiceless
 
             // Add the small circle diacritic to vowels to make them voiceless.
             Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiceless} =>
-              construct_IPA1(Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiced}) + "̥",
+              construct_transcription1(Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiced}) + "̥",
 
             // If there is no way to express a voiced consonant in a single
             // grapheme add a diacritic to the grapheme that represents
             // the voiceless counterpart.
             Consonant {vocal_folds: Voiced, place: x, manner: y, airstream: z} =>
-              construct_IPA1(Consonant {vocal_folds: Voiceless, place: x, manner: y, airstream: z}) + "̬",
+              construct_transcription1(Consonant {vocal_folds: Voiceless, place: x, manner: y, airstream: z}) + "̬",
 
             Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiced} =>
-              construct_IPA1(Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiceless}) + "̬",
+              construct_transcription1(Vowel {height: x, backness: y, rounding: z, vocal_folds: Voiceless}) + "̬",
 
             _                                                                => String::from("∅"), // This return value ( a symbol representing the empty set)
             // is not a full answer. It really means we don't have an answer.
@@ -568,19 +561,19 @@ pub mod international_phonetic_alphabet
     }
 
 
-    pub fn voiced_IPA(x: String) -> String
+    pub fn voiced_transcription(x: String) -> String
     {
-        construct_IPA(voiced_phonet(analyze_IPA(x)))
+        construct_transcription(voiced_phonet(analyze_transcription(x)))
     }
 
-    pub fn devoiced_IPA(x: String) -> String
+    pub fn devoiced_transcription(x: String) -> String
     {
-        construct_IPA(devoiced_phonet(analyze_IPA(x)))
+        construct_transcription(devoiced_phonet(analyze_transcription(x)))
     }
 
-    pub fn spirantized_IPA(x: String) -> String
+    pub fn spirantized_transcription(x: String) -> String
     {
-        construct_IPA(spirantized_phonet(analyze_IPA(x)))
+        construct_transcription(spirantized_phonet(analyze_transcription(x)))
     }
 
 
