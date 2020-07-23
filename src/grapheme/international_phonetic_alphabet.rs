@@ -477,13 +477,12 @@ pub mod international_phonetic_alphabet
             Consonant {vocal_folds: Voiced            , place: Velar         , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ɠ"),
             Consonant {vocal_folds: Voiced            , place: Uvular        , manner: UnmarkedManner, airstream: Implosive        }  => String::from("ʛ"),
 
-           c @ Consonant {vocal_folds: Voiced, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(c),
+            c @ Consonant {vocal_folds: Voiced, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(c),
 
-           c @ Consonant {vocal_folds: VoicedAspirated,  place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(deaspirate(c)) + "ʰ",
+            c @ Consonant {vocal_folds: VoicedAspirated,  place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(deaspirate(c)) + "ʰ",
+            c @ Consonant {vocal_folds: Voiceless, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(c),
 
-           c @ Consonant {vocal_folds: Voiceless, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(c),
-
-           c @ Consonant {vocal_folds: VoicelessAspirated, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(deaspirate(c)) + "ʰ",
+            c @ Consonant {vocal_folds: VoicelessAspirated, place: _, manner: _, airstream: PulmonicEgressive} => construct_unaspirated_pulmonic_egressive(deaspirate(c)) + "ʰ",
 
            // Close Vowels:
            Vowel { height: Close    , backness: Front  , rounding: Unrounded       , vocal_folds: Voiced} => String::from("i"),
@@ -587,6 +586,13 @@ pub mod international_phonetic_alphabet
         {
             assert_eq!(voiced_transcription(String::from("s")), "z");
         }
+
+        #[test]
+        fn spirantized_transcription_test_voiceless_alveolar_spirantized()
+        {
+            assert_eq!(spirantized_transcription(String::from("t")), "θ");
+        }
+
     }
 
 }
