@@ -577,6 +577,18 @@ pub mod international_phonetic_alphabet
     }
 
 
+    #[cfg(test)]
+    mod international_phonetic_alphabet_tests
+    {
+        use super::*;
+
+        #[test]
+        fn voiced_transcription_test()
+        {
+            assert_eq!(voiced_transcription(String::from("s")), "z");
+        }
+    }
+
 }
 
 
