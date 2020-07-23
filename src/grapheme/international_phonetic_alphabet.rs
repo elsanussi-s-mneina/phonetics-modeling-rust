@@ -418,10 +418,10 @@ pub mod international_phonetic_alphabet
                 // otherwise
                 // it will try to represent it in IPA with more than
                 // one character
-                let simple_result = construct_transcription1(phone_description);
+                let simple_result = construct_transcription1(phone_description.clone());
                 if simple_result == " "
                 {
-                    construct_transcription2(phone_description)
+                    construct_transcription2(phone_description.clone())
                 }
                 else
                 {
@@ -578,3 +578,5 @@ pub mod international_phonetic_alphabet
 
 
 }
+
+
