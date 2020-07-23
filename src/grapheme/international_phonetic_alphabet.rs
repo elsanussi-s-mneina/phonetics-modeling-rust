@@ -16,10 +16,6 @@ pub mod international_phonetic_alphabet
     use phon_mod::lib::devoiced_phonet;
     use phon_mod::lib::spirantized_phonet;
 
-    
-    pub struct IPAText(String);
-      // For storing text meant to be interpreted as International phonetic alphabet
-
 
     // See: https://www.internationalphoneticassociation.org/sites/default/files/IPA_Kiel_2015.pdf
     // For the source of this information..
@@ -35,102 +31,6 @@ pub mod international_phonetic_alphabet
      ,[ ' ', ' ', ' ', 'ʋ', ' ', ' ', ' ', 'ɹ', ' ', ' ', ' ', 'ɻ', ' ', 'j', ' ', 'ɰ', ' ', ' ', ' ', ' ', ' ', ' '] // Approximant
      ,[ ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'l', ' ', ' ', ' ', 'ɭ', ' ', 'ʎ', ' ', 'ʟ', ' ', ' ', ' ', ' ', ' ', ' '] // Lateral approximant
      ];
-
-    static CONSONANTS_NON_PULMONIC: [char; 10] =
-    // Clicks   Voiced implosives
-     [ 'ʘ',     'ɓ' // Bilabial
-     , 'ǀ', /* Dental */     'ɗ' // Dental/alveolar
-     , 'ǃ', /*  (Post)alveolar */  'ʄ'
-     , 'ǂ',  'ɠ'
-     , 'ǁ',  'ʛ'
-     ];
-
-    static OTHER_SYMBOLS: [char; 10] =
-      ['ʍ',  'ɕ'
-      ,'w',  'ʑ'
-      ,'ɥ',  'ɺ'
-      ,'ʜ',  'ɧ'
-      ,'ʢ'
-      ,'ʡ'
-      ];
-
-    static VOWELS: [char; 28] =
-      ['i', 'y',   'ɨ', 'ʉ',   'ɯ', 'u'   // Close
-      ,'ɪ', 'ʏ',            'ʊ'
-      ,'e', 'ø',   'ɘ', 'ɵ',   'ɤ', 'o'   // Close-mid
-      ,               'ə'
-      ,'ɛ', 'œ',   'ɜ', 'ɞ',   'ʌ', 'ɔ'   // Open-mid
-      , 'æ',           'ɐ'
-      , 'a', 'ɶ',              'ɑ', 'ɒ'  // Open
-      ];
-
-    static SUPRASEGMENTALS: [char; 9] =
-      [ 'ˈ'   // Primary stress
-      , 'ˌ'   // Secondary stress
-      , 'ː'   // Long
-      , 'ˑ'   // Half long
-
-      , '̆'    // Extra short
-      , '|'   // Minor (foot) group
-      , '‖'   // Major (intonation) group
-      , '.'   // Syllable break
-      , '‿'   // Linking (absence of a break
-      ];
-
-
-    static TONE_AND_WORD_ACCENTS: [char; 19] =
-      // Level
-      [ '˥', '̋'  // Extra high
-      , '˦', '́'  // High
-      , '˧', '̄'  // Mid
-      , '˨', '̀'  // Low
-      , '˩', '̏'  // Extra low
-      ,      'ꜜ'  // Downstep
-      ,      'ꜛ'  // Upstep
-
-      // Countour
-      , '̌' // Rising
-      , '̂' // Falling
-      , '᷄' // High rising
-      , '᷅' // Low rising
-      , '᷈' // Rising-falling
-      , '↗' // Global rise
-      , '↘' // Global fall
-      ];
-
-    static DIACRITICS_AND_SUPRASEGMENTALS: [char; 28] =
-      [ 'ʰ'  // Aspirated
-      , 'ʷ'  // Labialised
-      , 'ʲ'  // Palatalised
-      , 'ˠ'  // Velarised
-      , 'ˤ'  // Pharyngealised
-      , 'ⁿ'  // Pre/post nasalised
-      , 'ˡ'  // Lateral release
-
-      , '˞'  // Rhoticity
-      , 'ʼ'  // Ejective
-      , '̚'   // No audible release
-
-      , '̩'   // Syllabic
-      , '̯'   // Non-syllabic
-      , '̰'   // Creaky voiced
-      , '̥'   // Voiceless
-      , '̬'   // Voiced
-      , '̤'   // Breathy voiced
-      , '̊'   // Voiceless (diacritic placed above symbol with descender)
-      , '̍'   // Syllabic (diacritic placed above)
-      , '̪'   // Dental
-      , '̺'   // Apical
-      , '̻'   // Laminal
-      , '̼'   // Linguolabial
-      , '.'  // Closer variety/Fricative
-      , '̃'   // Nasalised
-      , '̈'   // Centralised
-      , '̽'   // Mid centralised
-      , '̆'   // Extra short
-      , '̇'    // Palatalization/Centralization
-      ];
-
 
     fn analyze_manner_transcription(x: char) -> (Manner, usize)
     {
