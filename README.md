@@ -5,10 +5,8 @@
 
 ## How to run:
 
-Browse to the subdirectory containing the cargo.toml file.
+(Browse to the subdirectory containing the cargo.toml file.)
 
-`cd phon-mod`
-
-Then browse to the following command:
+Run the following command:
 
 `cargo run`
