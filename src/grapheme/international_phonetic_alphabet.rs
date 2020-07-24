@@ -1,20 +1,17 @@
 pub mod international_phonetic_alphabet
 {
-    use phon_mod::lib::Phonet;
-    use phon_mod::lib::Phonet::*;
-    use phon_mod::lib::VocalFolds;
-    use phon_mod::lib::VocalFolds::*;
-    use phon_mod::lib::Place;
-    use phon_mod::lib::Place::*;
-    use phon_mod::lib::Manner;
-    use phon_mod::lib::Manner::*;
-    use phon_mod::lib::Airstream::*;
-    use phon_mod::lib::Height::*;
-    use phon_mod::lib::Backness::*;
-    use phon_mod::lib::Rounding::*;
-    use phon_mod::lib::voiced_phonet;
-    use phon_mod::lib::devoiced_phonet;
-    use phon_mod::lib::spirantized_phonet;
+    use phon_mod::lib::
+        {Phonet, Phonet::*,
+         VocalFolds, VocalFolds::*,
+         Place, Place::*,
+         Manner, Manner::*,
+         Airstream::*,
+         Height::*,
+         Backness::*,
+         Rounding::*,
+         voiced_phonet,
+         devoiced_phonet,
+         spirantized_phonet};
 
 
     // See: https://www.internationalphoneticassociation.org/sites/default/files/IPA_Kiel_2015.pdf

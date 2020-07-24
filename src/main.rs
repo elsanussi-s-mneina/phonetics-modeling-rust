@@ -1,7 +1,7 @@
 mod grapheme;
 
-use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::voiced_transcription;
-use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::devoiced_transcription;
+use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::
+    {voiced_transcription, devoiced_transcription};
 mod english_us_text;
 use crate::english_us_text::english_us_text::{USER_INPUT_VIEW_ENGLISH_PHONEME_INVENTORY,
                                               USER_INPUT_MAKE_A_PHONEME_VOICED,
