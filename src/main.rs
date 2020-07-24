@@ -2,8 +2,23 @@ mod grapheme;
 
 use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::voiced_transcription;
 use crate::grapheme::international_phonetic_alphabet::international_phonetic_alphabet::devoiced_transcription;
-
+mod english_us_text;
+use crate::english_us_text::english_us_text::{USER_INPUT_VIEW_ENGLISH_PHONEME_INVENTORY,
+                                              USER_INPUT_MAKE_A_PHONEME_VOICED,
+                                              USER_INPUT_MAKE_A_PHONEME_UNVOICED,
+                                              FAILED_TO_READ_USER_INPUT,
+                                              MENU,
+                                              THE_USER_SELECTED,
+                                              USER_SELECTION_NOT_HANDLED,
+                                              PROGRAM_TERMINATED_NORMALLY_MESSAGE,
+                                              VIEW_ENGLISH_PHONEME_INVENTORY_NOT_IMP,
+                                              PHONEME_TO_DEVOICE_MESSAGE,
+                                              PHONEME_TO_VOICE_MESSAGE,
+                                              PLEASE_READ_README_MESSAGE,
+                                              PROMPT};
 use std::io;
+
+
 
 
 fn main()
@@ -15,47 +30,48 @@ fn main()
     let mut selection = String::new();
 
     io::stdin().read_line(&mut selection)
-        .expect("Failed to read user input.");
+        .expect(FAILED_TO_READ_USER_INPUT);
     
     selection = selection.trim().to_string();
     
-    println!("The user selected: {}\n", selection);
-    
-    
-    if selection == "1"
+    println!("{} {}\n", THE_USER_SELECTED, selection);
+
+
+    if selection == USER_INPUT_VIEW_ENGLISH_PHONEME_INVENTORY
     {
         view_english_phoneme_inventory();
     }
-    else if selection == "2"
+    else if selection == USER_INPUT_MAKE_A_PHONEME_VOICED
     {
         prompt_for_phoneme_to_voice();
     }
-    else if selection == "3"
+    else if selection == USER_INPUT_MAKE_A_PHONEME_UNVOICED
     {
         prompt_for_phoneme_to_devoice()
     }
     else
     {
-       println!("User selection not handled");
+       println!("{}", USER_SELECTION_NOT_HANDLED);
     }
     
-    println!("\nProgram terminated normally.\n\n");
+    println!("{}", PROGRAM_TERMINATED_NORMALLY_MESSAGE);
 }
+
 
 fn view_english_phoneme_inventory()
 {
-    println!("View English phoneme inventory not implemented!");
+    println!("{}", VIEW_ENGLISH_PHONEME_INVENTORY_NOT_IMP);
 }
 
 fn prompt_for_phoneme_to_voice()
 {
-    println!("Enter the phoneme you would like to voice:");
+    println!("{}", PHONEME_TO_DEVOICE_MESSAGE);
     print_prompt();
     
     let mut phoneme = String::new();
 
     io::stdin().read_line(&mut phoneme)
-        .expect("Failed to read user input.");
+        .expect(FAILED_TO_READ_USER_INPUT);
     
     phoneme = phoneme.trim().to_string();
     println!("{}", voiced_transcription(phoneme));
@@ -63,30 +79,21 @@ fn prompt_for_phoneme_to_voice()
 
 fn prompt_for_phoneme_to_devoice()
 {
-    println!("Enter the phoneme you would like to devoice:");
+    println!("{}", PHONEME_TO_VOICE_MESSAGE);
     print_prompt();
     let mut phoneme = String::new();
 
     io::stdin().read_line(&mut phoneme)
-        .expect("Failed to read user input.");
+        .expect(FAILED_TO_READ_USER_INPUT);
     
     phoneme = phoneme.trim().to_string();
     println!("{}", devoiced_transcription(phoneme));
 }
 
-static MENU: &str = "What do you want to accomplish?
-
-1) view the English phoneme inventory (as IPA graphemes).
-2) make a phoneme voiced.
-3) make a phoneme unvoiced.
-
-Enter the number representing your selection below, after the prompt, and press enter/return.\n\n\n";
-
-static PROMPT: &str = "(PROMPT:) ";
 
 fn welcome()
 {
-    println!("Please read README.md file for instructions on how to use.");
+    println!("{}", PLEASE_READ_README_MESSAGE);
 }
 
 fn print_prompt()
